@@ -37,7 +37,7 @@ addEventListener('message', function(event) {
  *
  * These commands generate a snapshot of the given object. By default, this function will capture the window object.
  *
- * After creating a snapshot, two functions can be used to eliminate uninteresting objects.
+ * After creating a snapshot, two functions can be used to eliminate objects, those are not the focus of observation.
  *
  *     removeChanged(snap_object);
  *     Example:
@@ -47,24 +47,24 @@ addEventListener('message', function(event) {
  *     Example:
  *         removeUnchanged(snap);
  *
- * Both of these functions update the snapshot object automatically. The removeChanged command should be used to remove
- * every object that has changed since the previous snapshot update (either the first snapshot() function execution or
- * any of the remove functions). The removeUnchanged command removes every object that did not change since the previous
- * snapshot update.
+ * Both of these functions update the snapshot object automatically. The removeChanged() function should be used to
+ * remove objects, which have changed since the previous snapshot update (either from the first snapshot() function
+ * execution or any of the remove functions). The removeUnchanged() function removes objects, which have not changed
+ * since the previous snapshot update.
  *
  * After reducing the number of the objects, the following command can be used to get the shortest path of the observed
  * path.
  *
  *     getShortestPath(path, snap_object, [log]);
  *     Example:
- *         getShortestPath(snapshot.paths[42], snap);
- *         getShortestPath(snapshot.paths[42], snap, 1);
+ *         getShortestPath(snap.paths[42], snap);
+ *         getShortestPath(snap.paths[42], snap, 1);
  *
  * Another option would be to use the following command to get the shortest paths from an array of paths.
  *
  *     getShortestPaths(paths, snap_object);
  *     Example:
- *         getShortestPaths(snapshot.paths, snap);
+ *         getShortestPaths(snap.paths, snap);
  */
 
 /**
@@ -87,23 +87,18 @@ addEventListener('message', function(event) {
  *
  *     removeChanged(snap);
  *
- * 3. Make changes to as many objects as possible except the observed one.
- * 4. Remove changed objects.
- *
- *     removeChanged(snap);
- *
- * 5. Make change only to the observed object.
- * 6. Remove objects that did not change.
+ * 3. Make change to the observed object via UI.
+ * 4. Remove objects that did not change.
  *
  *     removeUnchanged(snap);
  *
- * 7. Repeat steps 5-6 for 3 times.
- * 8. Inspect "snap.objects" and "snap.paths" and look for the observed object
- * 9. Reduce the associated path.
+ * 5. Repeat steps 3-4 for a few times.
+ * 6. Inspect "snap.objects" and "snap.paths" and look for the observed object
+ * 7. Get the shortest version of recorded paths.
  *
- *     getShortestPath(snapshot.paths[42], snap);
+ *     getShortestPaths(snap.paths, snap);
  *
- * 10. Found path which contains the observed object.
+ * 8. Find the path which contains the observed object.
  */
 
 /**
@@ -287,7 +282,7 @@ const removeUnchanged = function(snapshot) {
  *
  *     [a, b.x, b.z, c]
  *
- * The array has more objects than before.
+ * It is possible for the array to have more objects than before.
  *
  * @param   {Snapshot} snapshot
  *          A snapshot object that is taken with snapshot() function.
@@ -427,6 +422,8 @@ const generateNodes = function(prevObj, currObj, currPath, snapshot) {
  *
  * @param   path
  *          Path to be checked.
+ * @param   obj
+ *          Object to be checked.
  * @returns {boolean}
  *          False if a path match filter. True otherwise.
  */
@@ -437,9 +434,7 @@ const filter = function(path, obj) {
     // Get the last part of the path
     const last = path.substring(path.lastIndexOf("."));
     return !(
-        last === '.AMMO' ||
         last === '.child' ||
-        // last === '.childNodes' ||
         last === '.children' ||
         last === '.cssRules' ||
         last === '.firstChild' ||
