@@ -1,8 +1,8 @@
-This repository provides the source code of DiffExtension, the extension we use to analyze the metaverse platforms. 
+This repository provides the source code of DiffTracker, the extension we use to analyze the metaverse platforms. 
 
 ## Structure
 The repository is structured as follows:
-- `DiffExtension/`: Contains the source code of the diffing algorithm extension.
+- `DiffTracker/`: Contains the source code of the diffing algorithm extension.
 
 ## How to use the extension
 The extension is compatible with Chromium-based browsers.
