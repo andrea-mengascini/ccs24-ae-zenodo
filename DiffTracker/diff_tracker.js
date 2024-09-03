@@ -588,19 +588,34 @@ const getShortestPaths = function(paths, snapshot, log=0) {
 
 
 function download() {
-    function dl(objects, fileName) {
-        let a = document.createElement("a");
-        let file = new Blob([
-            JSON.stringify(objects, (key, value) =>
-                typeof value === 'bigint' ? value.toString() : value
-        )], {type: 'text/plain'});
-        a.href = URL.createObjectURL(file);
-        a.download = fileName;
-        a.click();
-    }
+    function stringify(objects) {
+        function escapeCSV(s) {
+            s = s.replace(/"/g, '""');
+            return /[",;\s\t]/.test(s) ? `"${s}"` : s;
+        }
 
-    // Types
-    dl(snap.objects.map((e) => Object.prototype.toString.call(e)), "types.txt");
-    dl(getShortestPaths(snap.paths, snap), "paths.txt");
-    dl(snap.objects, "objects.txt");
+        return objects.map((obj) =>
+            escapeCSV(JSON.stringify(obj,
+                (key, value) => typeof value === 'bigint' ? value.toString() : value)
+                .replaceAll("\n", "\\n")));
+    }
+    const zip = rows=>rows[0].map((_,c)=>rows.map(row=>row[c]));
+
+    const objects = stringify(snap.objects);
+    const paths = stringify(getShortestPaths(snap.paths, snap));
+    const types = snap.objects.map((e) => Object.prototype.toString.call(e));
+    const combined = zip([objects, paths, types]);
+
+    let data = "";
+    combined.forEach(function(row){
+        const dataString = row.join(",");
+        data += dataString + "\n";
+    })
+
+    let a = document.createElement("a");
+
+    let file = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+    a.href = URL.createObjectURL(file);
+    a.download = "data.csv";
+    a.click();
 }
