@@ -33,10 +33,3 @@ chrome.runtime.onMessage.addListener(
         postMessage(message, '*');
     }
 );
-
-// Relay message from injected script to extension script
-addEventListener('message', function(event) {
-    if (event.data && event.data.replay === 'replay') {
-        console.log("REPLAY");
-    }
-});
