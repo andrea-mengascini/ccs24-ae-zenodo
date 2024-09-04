@@ -1,4 +1,4 @@
-This repository provides the source code of DiffTracker, the extension we use to analyze the metaverse platforms. 
+This repository contains DiffTracker, a Chrome extension designed to find javascript objects in the window object in web applications using a diffing algorithm.
 
 ## Structure
 The repository is structured as follows:
