@@ -1,5 +1,4 @@
-This repository contains DiffTracker, a Chrome extension designed to find javascript objects in the window object in web applications using a diffing algorithm.
-
+This repository contains DiffTracker, a Chrome extension designed to find javascript objects in the window object in web applications using a diffing algorithm used in the paper `The Big Brother's New Playground: Unmasking the Illusion of Privacy in Web Metaverses from a Malicious User's Perspective` accepted at CCS 2024.
 ## Structure
 The repository is structured as follows:
 - `DiffTracker/`: Contains the source code of the diffing algorithm extension.
