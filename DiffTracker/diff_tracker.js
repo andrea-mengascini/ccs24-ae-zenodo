@@ -594,10 +594,11 @@ function download() {
             return /[",;\s\t]/.test(s) ? `"${s}"` : s;
         }
 
+        const unsupported = ['bigint', 'function', 'undefined'];
+
         return objects.map((obj) =>
-            escapeCSV(JSON.stringify(obj,
-                (key, value) => typeof value === 'bigint' ? value.toString() : value)
-                .replaceAll("\n", "\\n")));
+            escapeCSV(unsupported.includes(typeof  obj) ? String(obj) : JSON.stringify(obj))
+                .replaceAll("\n", "\\n"));
     }
     const zip = rows=>rows[0].map((_,c)=>rows.map(row=>row[c]));
 
