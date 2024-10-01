@@ -437,15 +437,23 @@ const filter = function(path, obj) {
         last === '.child' ||
         last === '.children' ||
         last === '.cssRules' ||
+        last === '.dep' ||
+        last === '.deps' ||
         last === '.firstChild' ||
         last === '.firstElementChild' ||
         last === '.lastChild' ||
         last === '.lastElementChild' ||
+        last === '.nextDep' ||
         last === '.nextElementSibling' ||
         last === '.nextSibling' ||
+        last === '.nextSub' ||
         last === '.parent' ||
         last === '.previousElementSibling' ||
-        last === '.previousSibling'
+        last === '.previousSibling' ||
+        last === '.prevDep' ||
+        last === '.prevSub' ||
+        last === '.sub' ||
+        last === '.subs'
     );
 }
 
