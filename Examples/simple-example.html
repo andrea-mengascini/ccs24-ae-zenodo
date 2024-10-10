@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Variable Example</title>
+    <script>
+        // Function to display the variable's value
+        function displayVariable() {
+            document.getElementById("variableDisplay").innerText = document.myVariable;
+        }
+
+        // Function to set a random value to the variable
+        function setRandomValue() {
+            document.myVariable = Math.random().toString(36).substring(2, 15);
+            displayVariable();
+        }
+
+        // Function to set the variable to the value in the text box
+        function setValueFromInput() {
+            const newValue = document.getElementById("inputBox").value;
+            document.myVariable = newValue;
+            displayVariable();
+        }
+
+        // Initialize the variable with a random value when the page loads
+        window.onload = function() {
+            setRandomValue();
+        };
+    </script>
+</head>
+<body>
+    <h1>Document Variable Example</h1>
+    <p>Current value of the variable: <span id="variableDisplay"></span></p>
+    
+    <button onclick="setRandomValue()">Set Random Value</button>
+    <br><br>
+    <input type="text" id="inputBox" placeholder="Enter new value">
+    <button onclick="setValueFromInput()">Set Value from Input</button>
+</body>
+</html>

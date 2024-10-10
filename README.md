@@ -2,6 +2,8 @@ This repository contains DiffTracker, a Chrome extension designed to find javasc
 ## Structure
 The repository is structured as follows:
 - `DiffTracker/`: Contains the source code of the diffing algorithm extension.
+- `Testing_Guide.md`: Contains instructions for testing the extension in controlled environments.
+- `Examples/`: Contains the text examples.
 
 ## How to use the extension
 The extension is compatible with Chromium-based browsers.
@@ -22,3 +24,5 @@ To use the extension, open the popup menu from the extension list. In this menu,
 ### Inspecting the Result
 To see the result of the snapshot, open the `DevTools`'s console. The snapshot is a JavaScript object that can be inspected by typing `snap`. This object contains the remaining objects (`snap.objects`) and paths (`snap.paths`) after executing the `DiffTracker`.
 
+## Testing the extension
+For a guide on testing the extension with various test cases refer to `Testing_Guide.md`.

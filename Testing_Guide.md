@@ -1,0 +1,91 @@
+# Testing Guide
+
+This guide provides instructions for testing the Chrome extension, which is designed to identify JavaScript objects within the window object of web applications using a diffing algorithm.
+
+## Useful links
+
+**Tool repository**: https://zenodo.org/records/13684525
+
+
+## Table of Contents
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Testing](#testing)
+
+## Requirements
+A Chromium-based browser is required. For our experiments, we used Chrome version 124 with Developer mode enabled (see instructions below).
+
+## Installation
+Follow these steps to install the Chrome extension:
+
+1. Download the tool from the [Zenodo repository](https://zenodo.org/records/13684525) as a zip file and the test examples from this repositories (in the folder`Examples/`).
+2. Unzip the downloaded files.
+3. Navigate to the Extensions setting in your Chromium-based browser. For Chrome, access this by clicking the `three dots on the top right -> Extensions -> Manage Extensions`, or by typing `chrome://extensions` in the address bar.
+4. Enable `Developer Mode` using the toggle switch in the top right corner if it's not already activated.
+5. Click `Load unpacked` and select the extracted folder (`DiffTracker` folder inside `ccs24-ae-zenodo-main`).
+
+## Usage
+To use the extension:
+
+1. Open a new page in Google Chrome.
+2. Click the extension icon in the toolbar to open its interface.
+3. Open the DevTools Console to see the logs of the extension.
+
+### Using the Interface
+The interface offers several functionalities:
+
+* `Create snapshot`: Captures the current state of the window object, traversing it recursively to record each object's path and content. The path is represented as a dot-concatenated string of property names and array indices.
+* `Remove Changed Attributes`: Compares and removes objects that have changed since the last snapshot. It then recursively checks and retains unchanged nested objects, updating the snapshot with any objects that remained the same.
+* `Remove Unchanged Attributes`: Deletes unchanged objects from the snapshot. If the value has changed, the object is kept; if not, it is removed from the snapshot.
+* `Download`: Saves the current snapshot as a CSV file with columns for object, path, and type.
+
+## Testing
+
+### Simple example 
+
+Test the extension using `Examples/simple-example.html`, which includes functionality to randomly or directly change an object value.
+
+Steps:
+1. Open `simple-example.html`
+2. Use `Create snapshot` to capture the initial state of the objects.
+3. Apply `Remove Changed Attributes` to filter changed objects (possible noise at this step).
+4. Repeat the following process to narrow down the possible objects (The number of objects in the filtered snapshot is visible in the console log):
+    - Modify values using the buttons provided.
+    - Use `Remove Unchanged Attributes`.
+5. Access the possible objects and paths of observation via the console (`snap.objects` and the paths returned by calling the function `getShortestPaths(snap.paths, snap)`) or download the CSV using the `Download` button.
+
+#### Analyzing the results
+
+The variable of interest is named `myVariable`. After downloading the CSV, you can locate this variable by performing a simple string match with the value displayed on the HTML page. 
+
+The results may include additional variables beyond the target variable, due to simultaneous changes in other variables during the experiment. As outlined in the paper, a manual filtering step is required to isolate and identify the specific variable of interest.
+
+### Three.js, Babylon.js and A-Frame examples
+
+We provide examples using the three frameworks of applications analyzed in the paper—Three.js, Babylon.js, and A-Frame—to demonstrate the extension's functionality within 3D environments.
+To simplify manual analysis, we have limited the application's functionality to only moving a cube within a 3D space to minimize other variables.
+
+Reviewers can follow the previously outlined steps to determine the position of the cube.
+
+1. Open the respective HTML file for the framework (`a-frame-example.html` for A-Frame, `babylon-js-example.html` for Babylon.js and `three-js-example.html` for Three.js).
+2. Capture the initial state of JavaScript objects via the `Create snapshot` button of the extension.
+3. Filtering the changed object via the `Remove Changed Attributes` button. 
+4. Repeat the following process to refine the results (The number of objects in the filtered snapshot is visible in the console log):
+    - Use the WASD keys to move the cube.
+    - Use `Remove Unchanged Attributes`.
+5. Access the final variables via the console (`snap.objects` and using the function `getShortestPaths(snap.paths, snap)`) or download the CSV it using the `Download` button.
+
+The path to the cube's position should generally align with those detailed in the subsequent sections. Please be aware that some paths might be dynamically generated by the framework and could differ from those we describe. Regardless, the path recorded in your `snap.objects`, `getShortestPaths(snap.paths, snap)`, and the CSV file will accurately reflect the correct path for the specific experiment.
+
+In our article we guided this manual analysis with the expected type of the variable (in this case we expect a position to an array of 3 Numbers). We then filtered down by manual inspection together with the UI action (in this case moving the cube).
+
+#### Results for Three.js
+In the downloaded CSV file, the position of the Cube should be listed. According to our analysis, it is identified as `cube.position`.
+
+#### Results for Babylon.js
+In the downloaded CSV file, the position of the Cube should be listed. According to our analysis, it is identified as `cube._position`.
+
+#### Results for A-Frame
+In the downloaded CSV file, the position of the Cube should be listed. According to our analysis, it is identified as `AFRAME.scenes.0.childNodes.1.components.position.attrValue`.
+

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Box Movement (A-frame)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script>
+        AFRAME.registerComponent('wasd-move', {
+            schema: { speed: { type: 'number', default: 1 } },
+            init: function() {
+                this.keyState = {};
+                window.addEventListener('keydown', event => this.keyState[event.key.toLowerCase()] = true);
+                window.addEventListener('keyup', event => this.keyState[event.key.toLowerCase()] = false);
+            },
+            tick: function(time, timeDelta) {
+                const speed = this.data.speed * (timeDelta / 1000);
+                const position = this.el.getAttribute('position');
+                
+                if (this.keyState['w']) position.z -= speed;
+                if (this.keyState['s']) position.z += speed;
+                if (this.keyState['a']) position.x -= speed;
+                if (this.keyState['d']) position.x += speed;
+                
+                this.el.setAttribute('position', position);
+            }
+        });
+    </script>
+</head>
+<body>
+    <a-scene>
+        <a-box position="0 1 0" rotation="0 45 0" color="#4CC3D9" wasd-move="speed: 5"></a-box>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="100" height="100" color="#7BC8A4"></a-plane>
+        <a-sky color="#ECECEC"></a-sky>
+        <a-entity position="0 1.6 5">
+            <a-camera look-controls-enabled="true" wasd-controls-enabled="false">
+                <a-cursor></a-cursor>
+            </a-camera>
+        </a-entity>
+    </a-scene>
+</body>
+</html>
