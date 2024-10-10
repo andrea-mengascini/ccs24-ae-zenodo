@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Box Movement (Three.js)</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    var scene, camera, renderer, cube, plane;
+    var keyState = {};
+    var targetPosition, moveDistance = 0.05;
+    var lerpFactor = 0.1; // Smoothing factor
+
+    init();
+    animate();
+
+    function init() {
+        scene = new THREE.Scene();
+
+        // Camera setup
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 5, 5);
+        camera.lookAt(scene.position);
+
+        // Renderer setup
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting
+        var ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+        scene.add(ambientLight);
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(0, 1, 0);
+        scene.add(directionalLight);
+
+        // Cube
+        var cubeGeometry = new THREE.BoxGeometry();
+        var cubeMaterial = new THREE.MeshPhongMaterial({
+            color: 0x00008b, // dark blue
+            specular: 0x555555,
+            shininess: 30
+        });
+        cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.set(0, 1, 0);
+        targetPosition = cube.position.clone();
+        scene.add(cube);
+
+        // Plane
+        var planeGeometry = new THREE.PlaneGeometry(500, 500, 32);
+        var planeMaterial = new THREE.MeshPhongMaterial({color: 0xaaaaaa, side: THREE.DoubleSide}); // grey
+        plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = -Math.PI / 2;
+        scene.add(plane);
+
+        // Background color
+        renderer.setClearColor(new THREE.Color(0xadd8e6)); // light blue
+
+        document.addEventListener('keydown', function(event) { keyState[event.keyCode] = true; }, false);
+        document.addEventListener('keyup', function(event) { keyState[event.keyCode] = false; }, false);
+    }
+
+    function updateMovement() {
+        if (keyState[87]) { // W key
+            targetPosition.z -= moveDistance;
+        }
+        if (keyState[83]) { // S key
+            targetPosition.z += moveDistance;
+        }
+        if (keyState[65]) { // A key
+            targetPosition.x -= moveDistance;
+        }
+        if (keyState[68]) { // D key
+            targetPosition.x += moveDistance;
+        }
+        cube.position.lerp(targetPosition, lerpFactor);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        updateMovement();
+        renderer.render(scene, camera);
+    }
+</script>
+</body>
+</html>
